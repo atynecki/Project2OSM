@@ -19,12 +19,11 @@ public class RCC {
 		EventQueue.invokeLater(new Runnable(){
 			@Override
 			public void run(){
-				//TODO odkomentowaæ
-				//AppModel model = new AppModel();
-				//AppView view = new AppView();
-				//AppController controller = new AppController(model, view);
-				//view.setController(controller);
-				//view.setVisible(true);
+				AppModel model = new AppModel();
+				AppView view = new AppView();
+				AppController controller = new AppController(model, view);
+				view.setController(controller);
+				view.setVisible(true);
 			}
 		});
 
