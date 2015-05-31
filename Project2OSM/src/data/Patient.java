@@ -11,7 +11,7 @@ public class Patient {
 		ID_num_ = null;
 	}
 	
-	public Patient(String name, String last_name, String ID_num, Boolean sex){
+	public Patient(String name, String last_name, String ID_num){
 		name_ = name;
 		last_name_ = last_name;
 		ID_num_ = ID_num;

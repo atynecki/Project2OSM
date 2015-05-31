@@ -32,7 +32,7 @@ public class AppController implements ActionListener {
 				if(actionSource.equals(cView.getAppButtonPatientClear()))
 					cView.cleanPatientView();
 				else if(actionSource.equals(cView.getAppButtonLaboratoryClear()))
-					cView.cleanLaboratoryView();
+					cView.cleanClinicView();
 				break;
 				
 			case "Image load":
@@ -40,6 +40,7 @@ public class AppController implements ActionListener {
 				break;
 			
 			case "Analyze":
+				cView.setOrderNumberView(cModel.generateOrderNumber());
 				break;
 			
 			case "Save result":

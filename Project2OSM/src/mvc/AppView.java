@@ -38,7 +38,7 @@ public class AppView extends JFrame{
 	
 	/** data window panels */
 	private JPanel appPatientPanel = new JPanel();
-	private JPanel appLabPanel = new JPanel();
+	private JPanel appClinicPanel = new JPanel();
 	private JPanel appActionPanel = new JPanel();
 	
 	/** patient panel components */
@@ -53,8 +53,17 @@ public class AppView extends JFrame{
 	/* action button */
 	private JButton appButtonPatientClear = new JButton("Clear");
 	
-	/** laboratory panel components */
-	private JButton appButtonLaboratoryClear = new JButton("Clear");
+	/** clinic panel components */
+	/* labels */
+	private JLabel appClinicName = new JLabel("Name");
+	private JLabel appClinicAddress = new JLabel("Address");
+	private JLabel appClinicOrderNumber = new JLabel("Order number:");
+	/* text fields */
+	private JTextField appClinicFieldName = new JTextField(15);
+	private JTextField appClinicFieldAddress = new JTextField(30);
+	private JTextField appClinicFiledOrderNumber = new JTextField(12);
+	/* action button */
+	private JButton appButtonClinicClear = new JButton("Clear");
 	
 	/** action panel components */
 	/* action button */
@@ -81,7 +90,7 @@ public class AppView extends JFrame{
 		
 		/** set main view panels */
 		appPatientPanel.setBorder(BorderFactory.createTitledBorder("Patient"));
-		appLabPanel.setBorder(BorderFactory.createTitledBorder("Laboratory"));
+		appClinicPanel.setBorder(BorderFactory.createTitledBorder("Clinic"));
 		appActionPanel.setBorder(BorderFactory.createTitledBorder("Control"));
 		
 		appImagePanel.setBorder(BorderFactory.createTitledBorder("Image"));
@@ -96,7 +105,7 @@ public class AppView extends JFrame{
 		GridLayout appDatePanelLayout = new GridLayout(3,1);
 		appDatePanel.setLayout(appDatePanelLayout);
 		appDatePanel.add(appPatientPanel);
-		appDatePanel.add(appLabPanel);
+		appDatePanel.add(appClinicPanel);
 		appDatePanel.add(appActionPanel);
 		
 		/** set patient view panel */
@@ -115,11 +124,33 @@ public class AppView extends JFrame{
 		appPatientPanel.add(appPatientDataPanel, BorderLayout.CENTER);
 		
 		JPanel appActionBar1 = new JPanel();
-		appActionBar1.setLayout(new GridLayout(1,1));
+		appActionBar1.setLayout(new GridLayout(1,3));
+		appActionBar1.add(Box.createGlue());
 		appActionBar1.add(appButtonPatientClear);
+		appActionBar1.add(Box.createGlue());
 		appPatientPanel.add(appActionBar1, BorderLayout.PAGE_END);
 		
-		/** set laboratory view panel */
+		/** set clinic view panel */
+		appClinicPanel.setLayout(new BorderLayout());
+		
+		JPanel appClinicDataPanel = new JPanel();
+		appClinicDataPanel.setLayout(new BoxLayout(appClinicDataPanel, BoxLayout.Y_AXIS));
+		appClinicDataPanel.add(appClinicName);
+		appClinicDataPanel.add(appClinicFieldName);
+		appClinicDataPanel.add(appClinicAddress);
+		appClinicDataPanel.add(appClinicFieldAddress);
+		appClinicDataPanel.add(appClinicOrderNumber);
+		appClinicDataPanel.add(appClinicFiledOrderNumber);
+		appClinicFiledOrderNumber.setEditable(false);
+		appClinicDataPanel.add(Box.createVerticalStrut(10));
+		appClinicPanel.add(appClinicDataPanel, BorderLayout.CENTER);
+		
+		JPanel appActionBar2 = new JPanel();
+		appActionBar2.setLayout(new GridLayout(1,3));
+		appActionBar2.add(Box.createGlue());
+		appActionBar2.add(appButtonClinicClear);
+		appActionBar2.add(Box.createGlue());
+		appClinicPanel.add(appActionBar2, BorderLayout.PAGE_END);
 		
 		/** set action view panel */
 		appActionPanel.setLayout(new GridLayout(2,2,2,20));
@@ -134,7 +165,7 @@ public class AppView extends JFrame{
 	}
 
 	public JButton getAppButtonLaboratoryClear() {
-		return appButtonLaboratoryClear;
+		return appButtonClinicClear;
 	}
 	
 	/** ABOUT FRAME */
@@ -214,13 +245,36 @@ public class AppView extends JFrame{
 		appTextFieldID.setText("");
 	}
 	
-/** LABORATORY VIEW */
+/** CLINIC VIEW */
 	/**
-	 * @fn cleanLaboratoryView()
-	 * @brief clean laboratory view
+	 * @fn readPatientView()
+	 * @brief read data from clinic view
+	 * @return clinic object
 	 */
-	public void cleanLaboratoryView() {
+	public Clinic readClinicView(){
+		Clinic newClinic = new Clinic();
 		
+		newClinic.setName_(appClinicFieldName.getText());
+		newClinic.setAddress_(appClinicFieldAddress.getText());
+		
+		return newClinic;
+	}
+	
+	public void setOrderNumberView(String num){
+		appClinicFiledOrderNumber.setText(num);
+	}
+	
+	public void clearOrderNumberView(String num){
+		appClinicFiledOrderNumber.setText("");
+	}
+	
+	/**
+	 * @fn cleanClinicView()
+	 * @brief clean clinic view
+	 */
+	public void cleanClinicView() {
+		appClinicFieldAddress.setText("");
+		appClinicFieldName.setText("");
 	}
 /** ACTION VIEW */
 	
@@ -241,6 +295,7 @@ public class AppView extends JFrame{
 		appMenuAbout.addActionListener(c);
 		appMenuClose.addActionListener(c);
 		appButtonPatientClear.addActionListener(c);
+		appButtonClinicClear.addActionListener(c);
 		appButtonActionLoadImage.addActionListener(c);
 		appButtonActionProcess.addActionListener(c);
 		appButtonActionSaveResult.addActionListener(c);
