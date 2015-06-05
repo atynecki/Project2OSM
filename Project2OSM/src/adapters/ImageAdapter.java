@@ -3,7 +3,7 @@ package adapters;
 public class ImageAdapter {
 
 	
-	public ImageAdapter(){
-		
-	}
+	public ImageAdapter(){	}
+	
+	
 }

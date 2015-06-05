@@ -6,16 +6,22 @@ import java.io.File;
 
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
+import org.opencv.core.Mat;
+import org.opencv.highgui.Highgui;
+
+import processing.ImageProcessing;
 import data.*;
 
 public class AppView extends JFrame{
 
 	private static final long serialVersionUID = 1L;
+	public Mat img;
 
 	/** menu view components */
 	private JMenuBar appMenuBar = new JMenuBar();
@@ -72,6 +78,11 @@ public class AppView extends JFrame{
 	private JButton appButtonActionSaveResult = new JButton("Save result");
 	
 	private JFileChooser appFileChooser = new JFileChooser();
+	private JFileChooser appFileSave = new JFileChooser();
+	
+	private JLabel appImageLabel = new JLabel();
+	private JLabel appResultLabel = new JLabel();
+	
 	
 	/** default constructors (all views set) */
 	public AppView(){
@@ -101,7 +112,14 @@ public class AppView extends JFrame{
 		this.add(appDatePanel);
 		this.add(appImagePanel);
 		this.add(appResultPanel);
-
+		
+		// dodane przeze mnie zeby wyswietlal sie obrazek 
+		appImagePanel.setLayout(new FlowLayout());
+		appImagePanel.add(appImageLabel);
+		appResultPanel.setLayout(new FlowLayout());
+		appResultPanel.add(appResultLabel);
+				
+		
 		GridLayout appDatePanelLayout = new GridLayout(3,1);
 		appDatePanel.setLayout(appDatePanelLayout);
 		appDatePanel.add(appPatientPanel);
@@ -157,6 +175,7 @@ public class AppView extends JFrame{
 		appActionPanel.add(appButtonActionLoadImage);
 		appActionPanel.add(appButtonActionProcess);
 		appActionPanel.add(appButtonActionSaveResult);
+		
 	}
 	
 	/** getters */
@@ -278,12 +297,36 @@ public class AppView extends JFrame{
 	}
 /** ACTION VIEW */
 	
-	public void loadImage() {
+	public Mat loadImage() {
+		appFileChooser.setFileFilter(new FileNameExtensionFilter("JPG Images", "jpg", "jpeg"));
+		appFileChooser.setDialogTitle("Choose an image");
 		int returnValue = appFileChooser.showOpenDialog(null);
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-          File readFile  = appFileChooser.getSelectedFile();
-          //TODO sprawdzenie czy jest to plik z obrazem i zrzutowanie na obraz
-        }
+		if (returnValue == JFileChooser.APPROVE_OPTION)
+		{
+			 String pathName = appFileChooser.getSelectedFile().getPath();
+             ImageIcon icon = new ImageIcon(pathName);
+             appImageLabel.setIcon(icon);
+             img = Highgui.imread(pathName);
+		}
+	   return img;
+	}
+	
+	public void saveImage()
+	{
+		appFileSave.setFileFilter(new FileNameExtensionFilter("JPG Images", "jpg"));
+		appFileSave.setDialogTitle("Save an image");
+		int returnValue = appFileSave.showOpenDialog(null);
+		if (returnValue == JFileChooser.APPROVE_OPTION)
+		{
+			String file_save = appFileChooser.getCurrentDirectory().getAbsolutePath();
+			//Highgui.imwrite(file_save, img);
+		}
+	}
+	
+	public void analyseImage()
+	{
+		
+		//zwroc macierz zwroc liczbe erytrocytow 
 	}
 	
 	/**
