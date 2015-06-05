@@ -40,17 +40,16 @@ public class AppController implements ActionListener {
 				break;
 			
 			case "Analyze":
-				cView.setOrderNumberView(cModel.generateOrderNumber());
 				cView.analyseImage();
+				cView.setOrderNumberView(cModel.generateOrderNumber());
 				break;
 			
 			case "Save result":
-				
+				cView.saveImage();
 				try{
 					cModel.setPatient(cView.readPatientView());
 					cModel.savePatientData();
 					cModel.saveResultImage();
-					cView.saveImage();
 				} catch (AppException exception){
 					exception.show_exception();
 				}

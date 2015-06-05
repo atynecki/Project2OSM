@@ -2,6 +2,8 @@ package mvc;
 
 import java.util.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.io.File;
 
 import javax.swing.*;
@@ -12,16 +14,19 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.highgui.Highgui;
 
 import processing.ImageProcessing;
 import data.*;
 
-public class AppView extends JFrame{
 
+public class AppView extends JFrame{
+	
 	private static final long serialVersionUID = 1L;
 	public Mat img;
+	public Mat img1;
 
 	/** menu view components */
 	private JMenuBar appMenuBar = new JMenuBar();
@@ -80,8 +85,8 @@ public class AppView extends JFrame{
 	private JFileChooser appFileChooser = new JFileChooser();
 	private JFileChooser appFileSave = new JFileChooser();
 	
-	private JLabel appImageLabel = new JLabel();
-	private JLabel appResultLabel = new JLabel();
+	public static JLabel appImageLabel = new JLabel();
+	public static JLabel appResultLabel = new JLabel();
 	
 	
 	/** default constructors (all views set) */
@@ -305,10 +310,23 @@ public class AppView extends JFrame{
 		{
 			 String pathName = appFileChooser.getSelectedFile().getPath();
              ImageIcon icon = new ImageIcon(pathName);
-             appImageLabel.setIcon(icon);
              img = Highgui.imread(pathName);
+             appImageLabel.setIcon(icon);  
 		}
 	   return img;
+	}
+
+	public Mat analyseImage()
+	{
+		img1 = ImageProcessing.Process(img);
+		
+		BufferedImage image = new BufferedImage(img1.cols(), img1.rows(), BufferedImage.TYPE_3BYTE_BGR);
+		img1.get(0,0,((DataBufferByte)image.getRaster().getDataBuffer()).getData()); 
+		AppView.appResultLabel.setIcon((Icon)image);	// teoretyczne wyswietlenie w Jlabel
+		
+		//wgraj obrazek do Jlabel i wrzuc liczbe erytrocytow
+		// zwroc liczbe erytrocytow i obrazek zeby zapisac
+		return img1;
 	}
 	
 	public void saveImage()
@@ -319,14 +337,8 @@ public class AppView extends JFrame{
 		if (returnValue == JFileChooser.APPROVE_OPTION)
 		{
 			String file_save = appFileChooser.getCurrentDirectory().getAbsolutePath();
-			//Highgui.imwrite(file_save, img);
+			Highgui.imwrite(file_save, img1);  
 		}
-	}
-	
-	public void analyseImage()
-	{
-		
-		//zwroc macierz zwroc liczbe erytrocytow 
 	}
 	
 	/**
@@ -343,5 +355,7 @@ public class AppView extends JFrame{
 		appButtonActionProcess.addActionListener(c);
 		appButtonActionSaveResult.addActionListener(c);
 	}
+
+	
 	
 }
