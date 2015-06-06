@@ -23,10 +23,10 @@ import data.*;
 
 
 public class AppView extends JFrame{
-	
 	private static final long serialVersionUID = 1L;
-	public Mat img;
-	public Mat img1;
+	public Mat img = new Mat();
+	public Mat img1 = new Mat();
+	public String pathName;
 
 	/** menu view components */
 	private JMenuBar appMenuBar = new JMenuBar();
@@ -308,13 +308,15 @@ public class AppView extends JFrame{
 		int returnValue = appFileChooser.showOpenDialog(null);
 		if (returnValue == JFileChooser.APPROVE_OPTION)
 		{
-			 String pathName = appFileChooser.getSelectedFile().getPath();
+			 pathName = appFileChooser.getSelectedFile().getPath();
              ImageIcon icon = new ImageIcon(pathName);
-             img = Highgui.imread(pathName);
              appImageLabel.setIcon(icon);  
 		}
-	   return img;
+		img = Highgui.imread(pathName);
+		
+		return img;
 	}
+	
 
 	public Mat analyseImage()
 	{
