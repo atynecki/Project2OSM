@@ -40,6 +40,7 @@ public class AppController implements ActionListener {
 				break;
 			
 			case "Analyze":
+				
 				cView.analyseImage();
 				cView.setOrderNumberView(cModel.generateOrderNumber());
 				break;

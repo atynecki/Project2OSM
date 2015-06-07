@@ -1,6 +1,7 @@
 package mvc;
 
 import java.util.*;
+import java.util.List;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
@@ -16,7 +17,10 @@ import javax.swing.text.StyleContext;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
+import org.opencv.imgproc.Imgproc;
 
 import processing.ImageProcessing;
 import data.*;
@@ -312,23 +316,43 @@ public class AppView extends JFrame{
              ImageIcon icon = new ImageIcon(pathName);
              appImageLabel.setIcon(icon);  
 		}
-		img = Highgui.imread(pathName);
-		
+			img = Highgui.imread(pathName);// jest okej
+			//Highgui.imwrite("D:\\KOALA_1_orgin.jpg", img); // jest okej
+			//Highgui.imwrite("D:\\KOALA_1.jpg", img); // dupa
+			
+			// Cialo funkcji Process z ImageProcessing
+		   Mat dst = new Mat();
+		   Mat dst1 = new Mat();
+		   Mat dst2 = new Mat();
+
+		   Imgproc.threshold(img, dst, 12, 1, Imgproc.THRESH_BINARY);
+		   Highgui.imwrite("D:\\KOALA_1_binary.jpg", dst);
+		   int dilate_size = 1;
+		   Mat element  = Imgproc.getStructuringElement(2, new Size(3 * dilate_size + 1, 3 * dilate_size + 1));
+		   Imgproc.Canny(dst, dst1, 10, 60);
+		   Highgui.imwrite("D:\\KOALA_1_canny.jpg", dst1);
+		   Imgproc.dilate(dst1, dst2, element);
+		   Highgui.imwrite("D:\\KOALA_1_dilate.jpg", dst2);
+		   List<MatOfPoint> contours = new ArrayList<MatOfPoint>(); 
+		   Imgproc.findContours(dst2, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+		   int retval = contours.size();  // ilosc erytrocytow
+		   Highgui.imwrite("D:\\KOALA_1.jpg", dst);
+				
 		return img;
 	}
 	
 
-	public Mat analyseImage()
+	public void analyseImage()
 	{
-		img1 = ImageProcessing.Process(img);
-		
+		//img1 = ImageProcessing.Process(img);//gubi obrazek
 		BufferedImage image = new BufferedImage(img1.cols(), img1.rows(), BufferedImage.TYPE_3BYTE_BGR);
 		img1.get(0,0,((DataBufferByte)image.getRaster().getDataBuffer()).getData()); 
-		AppView.appResultLabel.setIcon((Icon)image);	// teoretyczne wyswietlenie w Jlabel
+		AppView.appResultLabel.setIcon((Icon)image);
+			// teoretyczne wyswietlenie w Jlabel
 		
 		//wgraj obrazek do Jlabel i wrzuc liczbe erytrocytow
 		// zwroc liczbe erytrocytow i obrazek zeby zapisac
-		return img1;
+		//return img1;
 	}
 	
 	public void saveImage()
