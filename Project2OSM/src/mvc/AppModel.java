@@ -9,6 +9,8 @@ package mvc;
 import java.time.LocalDateTime;
 import java.util.Random;
 
+import org.opencv.highgui.Highgui;
+
 import adapters.*;
 import data.*;
 import processing.*;
@@ -58,6 +60,7 @@ public class AppModel {
 		appFile.writeLine(resultFileLabel[4] + " " + clinic.getName_());
 		appFile.writeLine(resultFileLabel[5] + " " + clinic.getAddress_());
 		appFile.writeLine(resultFileLabel[6] + " " + orderNumber);
+	
 	}
 	
 	public void processImage(){

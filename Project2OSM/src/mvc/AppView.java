@@ -31,7 +31,7 @@ public class AppView extends JFrame{
 	public Mat img = new Mat();
 	public Mat img1 = new Mat();
 	public String pathName;
-	
+		
 	/** menu view components */
 	private JMenuBar appMenuBar = new JMenuBar();
 	private JMenu appMenu = new JMenu("Menu");
@@ -306,6 +306,20 @@ public class AppView extends JFrame{
 	}
 /** ACTION VIEW */
 	
+	//skalowanie obrazka
+	/*
+	public BufferedImage ResizedImage(BufferedImage img, int width, int height) 
+	{
+		BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		Graphics2D g2 = resizedImage.createGraphics();
+		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		g2.drawImage(img, 0, 0, width, height, null);
+		g2.dispose();
+		
+		return resizedImage;
+	}
+	*/
+	
 	public Mat loadImage() {
 		appFileChooser.setFileFilter(new FileNameExtensionFilter("JPG Images", "jpg", "jpeg"));
 		appFileChooser.setDialogTitle("Choose an image");
@@ -316,50 +330,19 @@ public class AppView extends JFrame{
              ImageIcon icon = new ImageIcon(pathName);
              appImageLabel.setIcon(icon);  
 		}
-			   Mat dst = new Mat();
-			   img = Highgui.imread(pathName, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
-			   Imgproc.threshold(img, dst, 12, 1, Imgproc.THRESH_OTSU);
-			   Highgui.imwrite("C:/Users/Anna/workspace/TEST_2/binary.jpg", img);
-			   int dilate_size = 1;
-			   Mat element  = Imgproc.getStructuringElement(2, new Size(3 * dilate_size + 1, 3 * dilate_size + 1));
-			   Imgproc.Canny(img, dst, 10, 60);
-			   Highgui.imwrite("C:/Users/Anna/workspace/TEST_2/canny_1.jpg", dst);
-			   Imgproc.dilate(dst, dst, element);
-			   Highgui.imwrite("C:/Users/Anna/workspace/TEST_2/dilate_1.jpg", dst);
-			 
-			   List<MatOfPoint> contours = new ArrayList<MatOfPoint>(); 
-			   Imgproc.findContours(dst, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-			   int retval = contours.size();
-				
+			   img = Highgui.imread(pathName, Highgui.CV_LOAD_IMAGE_GRAYSCALE);	
 		return img;
 	}
 	
-
 	public void analyseImage()
 	{
-		//img1 = ImageProcessing.Process(img);//gubi obrazek
-		BufferedImage image = new BufferedImage(img1.cols(), img1.rows(), BufferedImage.TYPE_3BYTE_BGR);
-		img1.get(0,0,((DataBufferByte)image.getRaster().getDataBuffer()).getData()); 
-		AppView.appResultLabel.setIcon((Icon)image);
-			// teoretyczne wyswietlenie w Jlabel
+		img1 = ImageProcessing.Process(img);
+		ImageIcon image = new ImageIcon(ImageProcessing.matToBufferedImage(img1));
+		int e;
+		e = ImageProcessing.countEryth(img1);
+		AppView.appResultLabel.setIcon(image);
+	}
 		
-		//wgraj obrazek do Jlabel i wrzuc liczbe erytrocytow
-		// zwroc liczbe erytrocytow i obrazek zeby zapisac
-		//return img1;
-	}
-	
-	public void saveImage()
-	{
-		appFileSave.setFileFilter(new FileNameExtensionFilter("JPG Images", "jpg"));
-		appFileSave.setDialogTitle("Save an image");
-		int returnValue = appFileSave.showOpenDialog(null);
-		if (returnValue == JFileChooser.APPROVE_OPTION)
-		{
-			String file_save = appFileChooser.getCurrentDirectory().getAbsolutePath();
-			Highgui.imwrite(file_save, img1);  
-		}
-	}
-	
 	/**
 	 * @fn setController()
 	 * @brief add listener for all active components
