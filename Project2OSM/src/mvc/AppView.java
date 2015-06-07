@@ -31,7 +31,7 @@ public class AppView extends JFrame{
 	public Mat img = new Mat();
 	public Mat img1 = new Mat();
 	public String pathName;
-
+	
 	/** menu view components */
 	private JMenuBar appMenuBar = new JMenuBar();
 	private JMenu appMenu = new JMenu("Menu");
@@ -316,27 +316,20 @@ public class AppView extends JFrame{
              ImageIcon icon = new ImageIcon(pathName);
              appImageLabel.setIcon(icon);  
 		}
-			img = Highgui.imread(pathName);// jest okej
-			//Highgui.imwrite("D:\\KOALA_1_orgin.jpg", img); // jest okej
-			//Highgui.imwrite("D:\\KOALA_1.jpg", img); // dupa
-			
-			// Cialo funkcji Process z ImageProcessing
-		   Mat dst = new Mat();
-		   Mat dst1 = new Mat();
-		   Mat dst2 = new Mat();
-
-		   Imgproc.threshold(img, dst, 12, 1, Imgproc.THRESH_BINARY);
-		   Highgui.imwrite("D:\\KOALA_1_binary.jpg", dst);
-		   int dilate_size = 1;
-		   Mat element  = Imgproc.getStructuringElement(2, new Size(3 * dilate_size + 1, 3 * dilate_size + 1));
-		   Imgproc.Canny(dst, dst1, 10, 60);
-		   Highgui.imwrite("D:\\KOALA_1_canny.jpg", dst1);
-		   Imgproc.dilate(dst1, dst2, element);
-		   Highgui.imwrite("D:\\KOALA_1_dilate.jpg", dst2);
-		   List<MatOfPoint> contours = new ArrayList<MatOfPoint>(); 
-		   Imgproc.findContours(dst2, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-		   int retval = contours.size();  // ilosc erytrocytow
-		   Highgui.imwrite("D:\\KOALA_1.jpg", dst);
+			   Mat dst = new Mat();
+			   img = Highgui.imread(pathName, Highgui.CV_LOAD_IMAGE_GRAYSCALE);
+			   Imgproc.threshold(img, dst, 12, 1, Imgproc.THRESH_OTSU);
+			   Highgui.imwrite("C:/Users/Anna/workspace/TEST_2/binary.jpg", img);
+			   int dilate_size = 1;
+			   Mat element  = Imgproc.getStructuringElement(2, new Size(3 * dilate_size + 1, 3 * dilate_size + 1));
+			   Imgproc.Canny(img, dst, 10, 60);
+			   Highgui.imwrite("C:/Users/Anna/workspace/TEST_2/canny_1.jpg", dst);
+			   Imgproc.dilate(dst, dst, element);
+			   Highgui.imwrite("C:/Users/Anna/workspace/TEST_2/dilate_1.jpg", dst);
+			 
+			   List<MatOfPoint> contours = new ArrayList<MatOfPoint>(); 
+			   Imgproc.findContours(dst, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+			   int retval = contours.size();
 				
 		return img;
 	}
