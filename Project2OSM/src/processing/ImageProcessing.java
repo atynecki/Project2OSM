@@ -42,8 +42,8 @@ public class ImageProcessing
 		return eryth;
 	}
 	
-	public static BufferedImage matToBufferedImage(Mat mat) {
-	   
+	public static BufferedImage matToBufferedImage(Mat mat) 
+	{
 	    BufferedImage image = new BufferedImage(mat.width(), mat.height(), BufferedImage.TYPE_BYTE_GRAY);
 	    WritableRaster raster = image.getRaster();
 	    DataBufferByte dataBuffer = (DataBufferByte) raster.getDataBuffer();
@@ -52,6 +52,8 @@ public class ImageProcessing
 
 	    return image;
 	}
+	
+	
 	
 
 	

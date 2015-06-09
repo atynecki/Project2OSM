@@ -63,11 +63,14 @@ public class AppModel {
 	
 	}
 	
-	public void processImage(){
+	public void processImage()
+	{
 		
 	}
-	public void saveResultImage(){
-		
+	
+	public void saveResultImage()
+	{	
+		//Highgui.imwrite(sciezka, img);
 	}
 	
 	public String generateOrderNumber(){

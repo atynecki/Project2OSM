@@ -47,11 +47,10 @@ public class AppView extends JFrame{
 	public static final String appAboutText = "RCC\n";
 	
 	/** main window panels */
-	private JPanel appDatePanel = new JPanel();
-	private JPanel appImagePanel = new JPanel();
-	private JPanel appResultPanel = new JPanel();
+	private JPanel appLeftPanel = new JPanel();
+	private JPanel appRightPanel = new JPanel();
 	
-	/** data window panels */
+	/** left window panels */
 	private JPanel appPatientPanel = new JPanel();
 	private JPanel appClinicPanel = new JPanel();
 	private JPanel appActionPanel = new JPanel();
@@ -87,7 +86,11 @@ public class AppView extends JFrame{
 	private JButton appButtonActionSaveResult = new JButton("Save result");
 	
 	private JFileChooser appFileChooser = new JFileChooser();
-	private JFileChooser appFileSave = new JFileChooser();
+	
+	/** right window panel */
+	private JPanel appImagePanel = new JPanel();
+	private JPanel appResultPanel = new JPanel();
+	private JPanel appCounterPanel = new JPanel();
 	
 	public static JLabel appImageLabel = new JLabel();
 	public static JLabel appResultLabel = new JLabel();
@@ -99,7 +102,7 @@ public class AppView extends JFrame{
 		this.setTitle("RCC (red cells counter)");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(1500,600);
-		this.setResizable(true);
+		this.setResizable(false);
 		this.setLocationRelativeTo(null);
 
 		/** set menu view */
@@ -115,12 +118,12 @@ public class AppView extends JFrame{
 		
 		appImagePanel.setBorder(BorderFactory.createTitledBorder("Image"));
 		appResultPanel.setBorder(BorderFactory.createTitledBorder("Result"));
+		appCounterPanel.setBorder(BorderFactory.createTitledBorder("Number of erythrocytes"));
 		
-		GridLayout appPanelsLayout = new GridLayout(1,3);
+		GridLayout appPanelsLayout = new GridLayout(1,2);
 		this.setLayout(appPanelsLayout);
-		this.add(appDatePanel);
-		this.add(appImagePanel);
-		this.add(appResultPanel);
+		this.add(appLeftPanel);
+		this.add(appRightPanel);
 		
 		// dodane przeze mnie zeby wyswietlal sie obrazek 
 		appImagePanel.setLayout(new FlowLayout());
@@ -130,10 +133,35 @@ public class AppView extends JFrame{
 				
 		
 		GridLayout appDatePanelLayout = new GridLayout(3,1);
-		appDatePanel.setLayout(appDatePanelLayout);
-		appDatePanel.add(appPatientPanel);
-		appDatePanel.add(appClinicPanel);
-		appDatePanel.add(appActionPanel);
+		appLeftPanel.setLayout(appDatePanelLayout);
+		appLeftPanel.add(appPatientPanel);
+		appLeftPanel.add(appClinicPanel);
+		appLeftPanel.add(appActionPanel);
+		
+		appRightPanel.setLayout(new BorderLayout());
+		appRightPanel.add(appCounterPanel, BorderLayout.PAGE_END);
+		JPanel appImagesPanel = new JPanel();
+		appImagesPanel.setLayout(new GridLayout(2,1));
+		appImagesPanel.add(appImagePanel);
+		appImagesPanel.add(appResultPanel);
+		appRightPanel.add(appImagesPanel, BorderLayout.CENTER);
+		
+		JSplitPane MainPanel = new JSplitPane();
+		setMinimumSize(new Dimension(900, 700)); 
+	    getContentPane().setLayout(new GridBagLayout());
+		MainPanel.setDividerLocation(400);
+		MainPanel.setEnabled(false);
+		appLeftPanel.setMinimumSize(new Dimension(50, 200)); 
+	    MainPanel.setLeftComponent(appLeftPanel); 
+	    appRightPanel.setMinimumSize(new Dimension(200, 200)); 
+	    MainPanel.setRightComponent(appRightPanel); 
+	    GridBagConstraints gridBagConstraints = new GridBagConstraints(); 
+	    gridBagConstraints.fill = GridBagConstraints.BOTH; 
+	    gridBagConstraints.weightx = 1.0; 
+	    gridBagConstraints.weighty = 1.0; 
+	    getContentPane().add(MainPanel, gridBagConstraints); 
+        Dimension screenSize = getToolkit().getScreenSize(); 
+	    setBounds((screenSize.width-410)/2, (screenSize.height-329)/2, 410, 329); 
 		
 		/** set patient view panel */
 		appPatientPanel.setLayout(new BorderLayout());
@@ -307,18 +335,18 @@ public class AppView extends JFrame{
 /** ACTION VIEW */
 	
 	//skalowanie obrazka
-	/*
+	
 	public BufferedImage ResizedImage(BufferedImage img, int width, int height) 
 	{
 		BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-		Graphics2D g2 = resizedImage.createGraphics();
+		Graphics2D g2 = (Graphics2D) resizedImage.createGraphics();
 		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		g2.drawImage(img, 0, 0, width, height, null);
 		g2.dispose();
 		
 		return resizedImage;
 	}
-	*/
+	
 	
 	public Mat loadImage() {
 		appFileChooser.setFileFilter(new FileNameExtensionFilter("JPG Images", "jpg", "jpeg"));
@@ -327,20 +355,24 @@ public class AppView extends JFrame{
 		if (returnValue == JFileChooser.APPROVE_OPTION)
 		{
 			 pathName = appFileChooser.getSelectedFile().getPath();
-             ImageIcon icon = new ImageIcon(pathName);
-             appImageLabel.setIcon(icon);  
+			 img = Highgui.imread(pathName, Highgui.CV_LOAD_IMAGE_GRAYSCALE);	
+			 BufferedImage image = ImageProcessing.matToBufferedImage(img);
+			 BufferedImage image1 = ResizedImage(image, appImagePanel.getWidth(), appImagePanel.getHeight());
+			 ImageIcon image2 = new ImageIcon(image1);
+             appImageLabel.setIcon(image2);  
 		}
-			   img = Highgui.imread(pathName, Highgui.CV_LOAD_IMAGE_GRAYSCALE);	
+			 	
 		return img;
 	}
 	
 	public void analyseImage()
 	{
 		img1 = ImageProcessing.Process(img);
-		ImageIcon image = new ImageIcon(ImageProcessing.matToBufferedImage(img1));
-		int e;
-		e = ImageProcessing.countEryth(img1);
-		AppView.appResultLabel.setIcon(image);
+		BufferedImage image = ImageProcessing.matToBufferedImage(img1);
+		BufferedImage image1 = ResizedImage(image, appResultPanel.getWidth(), appResultPanel.getHeight());
+		ImageIcon image2 = new ImageIcon(image1);
+		int e = ImageProcessing.countEryth(img1); //liczba erytrocytow
+		AppView.appResultLabel.setIcon(image2);
 	}
 		
 	/**
