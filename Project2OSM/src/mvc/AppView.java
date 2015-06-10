@@ -44,8 +44,13 @@ public class AppView extends JFrame{
 	private DefaultStyledDocument appAboutStyleDoc = new DefaultStyledDocument(appAboutStyleContext);
 	private JTextPane appAboutTextPane = new JTextPane(appAboutStyleDoc);
 	//TODO dokoñczyæ about
-	public static final String appAboutText = "RCC\n";
-	
+	public static final String appAboutText = "RCC\n\n  This application has been prepared for Software Medical Systems (OSM) "
+			+ "at Warsaw University of Technology, The Faculty of Electronics and Information Technology.\n\n "
+			+ "Authors : Artur Tynecki\n Anna Zawistowska\n 15L semester\n\n"
+			+ "Application can be used for counting erythrocytes from microscope images. The prefered image input format is JPEG. "
+			+ "All information about patient, clinic, number of erythrocytes and image (output format JPEG) is saved in 'Outcome' "
+			+ "folder named by patient name and surname.";
+		
 	/** main window panels */
 	private JPanel appLeftPanel = new JPanel();
 	private JPanel appRightPanel = new JPanel();
@@ -94,7 +99,7 @@ public class AppView extends JFrame{
 	
 	public static JLabel appImageLabel = new JLabel();
 	public static JLabel appResultLabel = new JLabel();
-	
+	public static JTextField appCounterField = new JTextField(4);
 	
 	/** default constructors (all views set) */
 	public AppView(){
@@ -145,6 +150,8 @@ public class AppView extends JFrame{
 		appImagesPanel.add(appImagePanel);
 		appImagesPanel.add(appResultPanel);
 		appRightPanel.add(appImagesPanel, BorderLayout.CENTER);
+		appCounterPanel.add(appCounterField);
+		
 		
 		JSplitPane MainPanel = new JSplitPane();
 		setMinimumSize(new Dimension(900, 700)); 
@@ -334,20 +341,6 @@ public class AppView extends JFrame{
 	}
 /** ACTION VIEW */
 	
-	//skalowanie obrazka
-	
-	public BufferedImage ResizedImage(BufferedImage img, int width, int height) 
-	{
-		BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-		Graphics2D g2 = (Graphics2D) resizedImage.createGraphics();
-		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		g2.drawImage(img, 0, 0, width, height, null);
-		g2.dispose();
-		
-		return resizedImage;
-	}
-	
-	
 	public Mat loadImage() {
 		appFileChooser.setFileFilter(new FileNameExtensionFilter("JPG Images", "jpg", "jpeg"));
 		appFileChooser.setDialogTitle("Choose an image");
@@ -357,7 +350,7 @@ public class AppView extends JFrame{
 			 pathName = appFileChooser.getSelectedFile().getPath();
 			 img = Highgui.imread(pathName, Highgui.CV_LOAD_IMAGE_GRAYSCALE);	
 			 BufferedImage image = ImageProcessing.matToBufferedImage(img);
-			 BufferedImage image1 = ResizedImage(image, appImagePanel.getWidth(), appImagePanel.getHeight());
+			 BufferedImage image1 = ImageProcessing.ResizedImage(image, appImagePanel.getWidth(), appImagePanel.getHeight());
 			 ImageIcon image2 = new ImageIcon(image1);
              appImageLabel.setIcon(image2);  
 		}
@@ -369,7 +362,7 @@ public class AppView extends JFrame{
 	{
 		img1 = ImageProcessing.Process(img);
 		BufferedImage image = ImageProcessing.matToBufferedImage(img1);
-		BufferedImage image1 = ResizedImage(image, appResultPanel.getWidth(), appResultPanel.getHeight());
+		BufferedImage image1 = ImageProcessing.ResizedImage(image, appResultPanel.getWidth(), appResultPanel.getHeight());
 		ImageIcon image2 = new ImageIcon(image1);
 		int e = ImageProcessing.countEryth(img1); //liczba erytrocytow
 		AppView.appResultLabel.setIcon(image2);
