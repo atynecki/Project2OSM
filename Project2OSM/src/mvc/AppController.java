@@ -1,5 +1,12 @@
 package mvc;
 
+/**
+ * @class AppController
+ * @brief class representing application control. Implements user interaction, model and views update.
+ * Contains AppModel, AppView
+ * @implements ActionListener
+ */
+
 import java.awt.event.*;
 
 public class AppController implements ActionListener {
@@ -14,6 +21,11 @@ public class AppController implements ActionListener {
 		this.cModel.setController(this);
 	}
 
+	/**
+	 * @fn actionPerformed()
+	 * @brief action event handler
+	 * @param action event
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String actionCommand = e.getActionCommand();
@@ -36,11 +48,11 @@ public class AppController implements ActionListener {
 				break;
 				
 			case "Image load":
-				cView.loadImage();
+				cView.setImageView(cModel.loadImage(cView.getSelectedPath()));
 				break;
 			
 			case "Analyze":
-				cView.analyseImage();
+				cView.setResultView(cModel.processImage(), cModel.getNumberEryth());
 				cView.setOrderNumberView(cModel.generateOrderNumber());
 				break;
 			
@@ -48,14 +60,12 @@ public class AppController implements ActionListener {
 			 try{
 					cModel.setPatient(cView.readPatientView());
 					cModel.setClinic(cView.readClinicView());
-					cModel.savePatientData();
-					cModel.saveResultImage();
+					cModel.saveData();
 				} catch (AppException exception){
 					exception.show_exception();
 				}
 				
 				break;
-				
 		}
 	}
 	

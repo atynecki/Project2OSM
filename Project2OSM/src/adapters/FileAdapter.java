@@ -1,9 +1,13 @@
 package adapters;
 
+/**
+ * @class FileAdapter
+ * @brief class representing adapter to communication with file object 
+ */
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -15,22 +19,26 @@ public class FileAdapter {
 	protected String cellSeparator;
 	protected String lineSeparator;
 	
+	/** default constructors */
 	public FileAdapter(){
 		file = null;
 		this.cellSeparator = null;
 		this.lineSeparator = null;
 	}
 	
+	/** parameterized constructors */
 	public FileAdapter(String filePath, String cellSeparator, String lineSeparator){
 		file = new File(filePath);
 		this.cellSeparator = cellSeparator;
 		this.lineSeparator = lineSeparator;
 	}
 	
-	public boolean exists(){
-		return file.exists();
-	}
-	
+	/**
+	 * @fn createDirectory()
+	 * @brief create directory according to path
+	 * @param path
+	 * @return true if create directory correctly
+	 */
 	public static boolean createDirectory(String path){
 		boolean result = false;
 		try{
@@ -41,29 +49,11 @@ public class FileAdapter {
 		return result;
 	}
 	
-	public String getFileName(){
-		if(file == null) return null;
-		return file.getName();
-	}
-	
-	public void openToRead(){
-		try {
-			bufferedReader = new BufferedReader(new FileReader(file));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public String readLine(){
-		String line = null;
-		try {
-			line = bufferedReader.readLine();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return line;
-	}
-	
+	/**
+	 * @fn createFileAndDirs()
+	 * @brief create directory and file
+	 * @throws IOException
+	 */
 	protected void createFileAndDirs() throws IOException{
 		if(!file.exists()){
 			file.getParentFile().mkdirs();
@@ -71,6 +61,10 @@ public class FileAdapter {
 		}
 	}
 	
+	/**
+	 * @fn openOrCreateToWrite()
+	 * @brief open (if exist) or create file to write 
+	 */
 	public void openOrCreateToWrite() {
 		try {
 			createFileAndDirs();
@@ -81,6 +75,11 @@ public class FileAdapter {
 		}
 	}
 	
+	/**
+	 * @fn write()
+	 * @brief write String to file
+	 * @param String object
+	 */
 	public void write(String str) {
 		if (file.canWrite()) {
 			try {
@@ -92,6 +91,11 @@ public class FileAdapter {
 		}
 	}
 
+	/**
+	 * @fn writeLine()
+	 * @brief write line to file
+	 * @param String object
+	 */
 	public void writeLine(String line){
 		if(lineSeparator == null){
 			line += System.getProperty("line.separator");
@@ -102,20 +106,10 @@ public class FileAdapter {
 		}
 	}
 
-	public void writeCSVLine(String[] cells){
-		StringBuilder line = new StringBuilder();
-		for(int i = 0; i < cells.length; i++){
-			line.append(cells[i]);
-			
-			if(i == cells.length - 1)
-				break;
-			
-			line.append(cellSeparator);
-		}
-		line.append(lineSeparator);
-		write(line.toString());
-	}
-
+	/**
+	 * @fn close()
+	 * @brief close file
+	 */
 	public void close(){
 		try {
 			if (bufferedReader != null) {

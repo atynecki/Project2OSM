@@ -1,14 +1,21 @@
 package data;
 
+/**
+ * @class Clinic
+ * @brief class representing clinic object contains general information (name, address)
+ */
+
 public class Clinic {
 	private String name_;
 	private String address_;
 	
+	/** default constructors */
 	public Clinic(){
 		name_ = null;
 		address_ = null;
 	}
 
+	/** getters and setters */
 	public String getName_() {
 		return name_;
 	}
@@ -25,14 +32,23 @@ public class Clinic {
 		this.address_ = address_;
 	}
 
-
-
+	/**
+	 * @fn toString()
+	 * @brief method return object representation in string
+	 * @return string representation of object
+	 */
 	@Override
 	public String toString() {
 		return "Clinic [name_=" + name_ + ", address_=" + address_
 				+ "]";
 	}
 
+	/**
+	 * @fn equals()
+	 * @brief method for compare clinic object
+	 * @param general object
+	 * @return true if equal
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

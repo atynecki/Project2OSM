@@ -1,11 +1,13 @@
 package mvc;
 
-import java.util.*;
-import java.util.List;
+/**
+ * @class AppView
+ * @brief class representing application views. Contains all GUI components and presented graphically AppModel class
+ * @extends JFrame class
+ */
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.io.File;
 
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
@@ -15,23 +17,14 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
-import org.opencv.imgproc.Imgproc;
 
 import processing.ImageProcessing;
 import data.*;
 
-
 public class AppView extends JFrame{
 	private static final long serialVersionUID = 1L;
-	public static Mat img = new Mat();
-	public static Mat img1 = new Mat();
-	public String pathName;
-	public int numberEryth;
 		
 	/** menu view components */
 	private JMenuBar appMenuBar = new JMenuBar();
@@ -44,7 +37,6 @@ public class AppView extends JFrame{
 	private StyleContext appAboutStyleContext = new StyleContext();
 	private DefaultStyledDocument appAboutStyleDoc = new DefaultStyledDocument(appAboutStyleContext);
 	private JTextPane appAboutTextPane = new JTextPane(appAboutStyleDoc);
-	//TODO dokoñczyæ about
 	public static final String appAboutText = "RCC\n\n  This application has been prepared for Software Medical Systems (OSM) "
 			+ "at Warsaw University of Technology, The Faculty of Electronics and Information Technology.\n\n "
 			+ "Authors : Artur Tynecki\n Anna Zawistowska\n 15L semester\n\n"
@@ -92,14 +84,18 @@ public class AppView extends JFrame{
 	private JButton appButtonActionSaveResult = new JButton("Save result");
 	
 	private JFileChooser appFileChooser = new JFileChooser();
+	public String pathName;
 	
 	/** right window panel */
 	private JPanel appImagePanel = new JPanel();
 	private JPanel appResultPanel = new JPanel();
 	private JPanel appCounterPanel = new JPanel();
 	
+	/** image panels */
 	public static JLabel appImageLabel = new JLabel();
 	public static JLabel appResultLabel = new JLabel();
+	
+	/** result panel components */
 	public static JTextField appCounterField = new JTextField(4);
 	
 	/** default constructors (all views set) */
@@ -131,30 +127,6 @@ public class AppView extends JFrame{
 		this.add(appLeftPanel);
 		this.add(appRightPanel);
 		
-		// dodane przeze mnie zeby wyswietlal sie obrazek 
-		appImagePanel.setLayout(new FlowLayout());
-		appImagePanel.add(appImageLabel);
-		appResultPanel.setLayout(new FlowLayout());
-		appResultPanel.add(appResultLabel);
-				
-		
-		GridLayout appDatePanelLayout = new GridLayout(3,1);
-		//FlowLayout appDatePanelLayout = new FlowLayout(FlowLayout.CENTER);
-		appLeftPanel.setLayout(appDatePanelLayout);
-		appLeftPanel.add(appPatientPanel);
-		appLeftPanel.add(appClinicPanel);
-		appLeftPanel.add(appActionPanel);
-		
-		appRightPanel.setLayout(new BorderLayout());
-		appRightPanel.add(appCounterPanel, BorderLayout.PAGE_END);
-		JPanel appImagesPanel = new JPanel();
-		appImagesPanel.setLayout(new GridLayout(2,1));
-		appImagesPanel.add(appImagePanel);
-		appImagesPanel.add(appResultPanel);
-		appRightPanel.add(appImagesPanel, BorderLayout.CENTER);
-		appCounterPanel.add(appCounterField);
-		
-		
 		JSplitPane MainPanel = new JSplitPane();
 		setMinimumSize(new Dimension(900, 700)); 
 	    getContentPane().setLayout(new GridBagLayout());
@@ -170,7 +142,14 @@ public class AppView extends JFrame{
 	    gridBagConstraints.weighty = 1.0; 
 	    getContentPane().add(MainPanel, gridBagConstraints); 
         Dimension screenSize = getToolkit().getScreenSize(); 
-	    setBounds((screenSize.width-410)/2, (screenSize.height-329)/2, 410, 329); 
+	    setBounds((screenSize.width-410)/2, (screenSize.height-329)/2, 410, 329);
+				
+		/** set left view panels */
+		GridLayout appDatePanelLayout = new GridLayout(3,1);
+		appLeftPanel.setLayout(appDatePanelLayout);
+		appLeftPanel.add(appPatientPanel);
+		appLeftPanel.add(appClinicPanel);
+		appLeftPanel.add(appActionPanel);
 		
 		/** set patient view panel */
 	    appPatientPanel.setLayout(new BorderLayout());
@@ -255,6 +234,25 @@ public class AppView extends JFrame{
 		c.ipady = 20;
 		appActionPanel.add(appButtonActionSaveResult,c);
 		
+		/** set right view panels */
+		appRightPanel.setLayout(new BorderLayout());
+		appRightPanel.add(appCounterPanel, BorderLayout.PAGE_END);
+		JPanel appImagesPanel = new JPanel();
+		appImagesPanel.setLayout(new GridLayout(2,1));
+		appImagesPanel.add(appImagePanel);
+		appImagesPanel.add(appResultPanel);
+		appRightPanel.add(appImagesPanel, BorderLayout.CENTER);
+		
+		/** set image view panels */
+		appImagePanel.setLayout(new FlowLayout());
+		appImagePanel.add(appImageLabel);
+		
+		/** set result view panels */
+		appResultPanel.setLayout(new FlowLayout());
+		appResultPanel.add(appResultLabel);
+	
+		/** set result number panels */
+		appCounterPanel.add(appCounterField);
 	}
 	
 	/** getters */
@@ -358,14 +356,6 @@ public class AppView extends JFrame{
 		return newClinic;
 	}
 	
-	public void setOrderNumberView(String num){
-		appClinicFiledOrderNumber.setText(num);
-	}
-	
-	public void clearOrderNumberView(String num){
-		appClinicFiledOrderNumber.setText("");
-	}
-	
 	/**
 	 * @fn cleanClinicView()
 	 * @brief clean clinic view
@@ -374,42 +364,65 @@ public class AppView extends JFrame{
 		appClinicFieldAddress.setText("");
 		appClinicFieldName.setText("");
 	}
-/** ACTION VIEW */
 	
-	public Mat loadImage() {
+	/**
+	 * @fn setOrderNumberView()
+	 * @brief set order number view
+	 * @param order number
+	 */
+	public void setOrderNumberView(String num){
+		appClinicFiledOrderNumber.setText(num);
+	}
+	
+	/**
+	 * @fn clearOrderNumberView()
+	 * @brief clear order number view
+	 */
+	public void clearOrderNumberView(){
+		appClinicFiledOrderNumber.setText("");
+	}
+	
+/** ACTION VIEW */
+	/**
+	 * @fn getSelectedPath()
+	 * @brief get selected file path
+	 * @return file path
+	 */
+	public String getSelectedPath() {
 		appFileChooser.setFileFilter(new FileNameExtensionFilter("JPG Images", "jpg", "jpeg"));
 		appFileChooser.setDialogTitle("Choose an image");
 		int returnValue = appFileChooser.showOpenDialog(null);
 		if (returnValue == JFileChooser.APPROVE_OPTION)
 		{
 			 pathName = appFileChooser.getSelectedFile().getPath();
-			 img = Highgui.imread(pathName, Highgui.CV_LOAD_IMAGE_GRAYSCALE);	
-			 BufferedImage image = ImageProcessing.matToBufferedImage(img);
-			 BufferedImage image1 = ImageProcessing.ResizedImage(image, appImagePanel.getWidth(), appImagePanel.getHeight());
-			 ImageIcon image2 = new ImageIcon(image1);
-             appImageLabel.setIcon(image2);  
 		}
 			 	
-		return img;
+		return pathName;
 	}
 	
-	public void analyseImage()
-	{
-		img1 = ImageProcessing.Process(img);
-		BufferedImage image = ImageProcessing.matToBufferedImage(img1);
-		BufferedImage image1 = ImageProcessing.ResizedImage(image, appResultPanel.getWidth(), appResultPanel.getHeight());
+	/**
+	 * @fn setImageView()
+	 * @brief set source image view
+	 * @param image object
+	 */
+	public void setImageView(BufferedImage image){
+		BufferedImage image1 = ImageProcessing.resizedImage(image, appImagePanel.getWidth(), appImagePanel.getHeight());
 		ImageIcon image2 = new ImageIcon(image1);
-		numberEryth = ImageProcessing.countEryth(img1); //liczba erytrocytow
-		String numberEryth1 = Integer.toString(numberEryth);
-		appCounterField.setText(numberEryth1);
-		AppView.appResultLabel.setIcon(image2);
+        appImageLabel.setIcon(image2); 
 	}
 	
-	public static Mat getImage() 
-	{
-		return img1;
+	/**
+	 * @fn setResultView()
+	 * @brief set result image and erythrocytes view
+	 * @param image object
+	 */
+	public void setResultView(BufferedImage image, int eryth_number){
+		BufferedImage image1 = ImageProcessing.resizedImage(image, appResultPanel.getWidth(), appResultPanel.getHeight());
+		ImageIcon image2 = new ImageIcon(image1);
+		String strNumber = Integer.toString(eryth_number);
+		appCounterField.setText(strNumber);
+		appResultLabel.setIcon(image2); 
 	}
-	
 			
 	/**
 	 * @fn setController()
@@ -425,7 +438,4 @@ public class AppView extends JFrame{
 		appButtonActionProcess.addActionListener(c);
 		appButtonActionSaveResult.addActionListener(c);
 	}
-
-	
-	
 }

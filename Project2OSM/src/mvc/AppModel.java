@@ -6,11 +6,16 @@ package mvc;
  * Contains list of patients and controller class
  */
 
+import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
 import java.util.Random;
 
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
+import org.opencv.imgproc.Imgproc;
 
 import adapters.*;
 import data.*;
@@ -22,19 +27,20 @@ public class AppModel {
 	private String csvCellSeparator = " ";
 	private String csvLineSeparator = System.lineSeparator();
 	private String[] resultFileLabel = {"[Data]", "[Name]", "[Surname]", "[ID number]", "[Clinic name]", "[Clinic address]",
-			"[Order numer]"};
-	private ImageAdapter appImage;
+			"[Order numer]" , "[Number erythrocytes]"};
 	private Patient patient;
 	private Clinic clinic;
 	private String orderNumber;
 	private Random randomGenerator = new Random();
+	public static Mat img_src = new Mat();
+	public static Mat img_result = new Mat();
 	private ImageProcessing processing;
+	public int numberEryth;
 	
 	/** default constructors */
 	public AppModel (){
 		controller = null;
 		appFile = new FileAdapter();
-		appImage = new ImageAdapter();
 		patient = new Patient();
 		processing = new ImageProcessing();
 	}
@@ -51,8 +57,43 @@ public class AppModel {
 	public void setClinic(Clinic clinic) {
 		this.clinic = clinic;
 	}
+	
+	public int getNumberEryth() {
+		return numberEryth;
+	}
 
-	public void savePatientData(){
+	/**
+	 * @fn loadImage()
+	 * @brief load source image
+	 * @param file path
+	 * @return file object
+	 */
+	public BufferedImage loadImage(String path) {
+		 img_src = Highgui.imread(path, Highgui.CV_LOAD_IMAGE_GRAYSCALE);	
+		 BufferedImage image = ImageProcessing.matToBufferedImage(img_src);
+		 
+		 return image;
+	}
+	
+	/**
+	 * @fn processImage()
+	 * @brief analyze image
+	 * @return file object after analyze
+	 */
+	public BufferedImage processImage()
+	{
+		img_result = processing.process(img_src);
+		BufferedImage image = ImageProcessing.matToBufferedImage(img_result);
+		numberEryth = processing.countEryth(img_result);
+		
+		return image;
+	}
+
+	/**
+	 * @fn saveData()
+	 * @brief save analyze result image + patient and clinic data
+	 */
+	public void saveData(){
 		String dataDirPath1 = System.getProperty("user.dir");
 		String pathIMG  = dataDirPath1 + "\\" + "outcome" + "\\" + patient.getName_() + " " + patient.getLast_name_() + "\\" + "result.jpg";
 		String dataDirPath = System.getProperty("user.dir") + "/" + "outcome" + "/" + patient.getName_() + " " + patient.getLast_name_() + "/";
@@ -67,20 +108,16 @@ public class AppModel {
 		appFile.writeLine(resultFileLabel[4] + " " + clinic.getName_());
 		appFile.writeLine(resultFileLabel[5] + " " + clinic.getAddress_());
 		appFile.writeLine(resultFileLabel[6] + " " + orderNumber);
-		Mat image = AppView.getImage();
-		Highgui.imwrite(pathIMG, image); 
+		appFile.writeLine(resultFileLabel[7] + " " + numberEryth);
+		appFile.close();
+		Highgui.imwrite(pathIMG, img_result); 
 	}
 	
-	public void processImage()
-	{
-		
-	}
-	
-	public void saveResultImage()
-	{	
-		//Highgui.imwrite(sciezka, img);
-	}
-	
+	/**
+	 * @fn generateOrderNumber()
+	 * @brief generate order number
+	 * @return order number in String representation
+	 */
 	public String generateOrderNumber(){
 		LocalDateTime examDate = LocalDateTime.now();
 		int uniq = randomGenerator.nextInt(1000) ;
