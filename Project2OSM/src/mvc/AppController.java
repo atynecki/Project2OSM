@@ -47,6 +47,7 @@ public class AppController implements ActionListener {
 			case "Save result":
 			 try{
 					cModel.setPatient(cView.readPatientView());
+					cModel.setClinic(cView.readClinicView());
 					cModel.savePatientData();
 					cModel.saveResultImage();
 				} catch (AppException exception){

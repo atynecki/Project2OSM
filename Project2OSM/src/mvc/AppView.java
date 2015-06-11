@@ -28,9 +28,10 @@ import data.*;
 
 public class AppView extends JFrame{
 	private static final long serialVersionUID = 1L;
-	public Mat img = new Mat();
-	public Mat img1 = new Mat();
+	public static Mat img = new Mat();
+	public static Mat img1 = new Mat();
 	public String pathName;
+	public int numberEryth;
 		
 	/** menu view components */
 	private JMenuBar appMenuBar = new JMenuBar();
@@ -138,6 +139,7 @@ public class AppView extends JFrame{
 				
 		
 		GridLayout appDatePanelLayout = new GridLayout(3,1);
+		//FlowLayout appDatePanelLayout = new FlowLayout(FlowLayout.CENTER);
 		appLeftPanel.setLayout(appDatePanelLayout);
 		appLeftPanel.add(appPatientPanel);
 		appLeftPanel.add(appClinicPanel);
@@ -171,17 +173,36 @@ public class AppView extends JFrame{
 	    setBounds((screenSize.width-410)/2, (screenSize.height-329)/2, 410, 329); 
 		
 		/** set patient view panel */
-		appPatientPanel.setLayout(new BorderLayout());
-		
-		JPanel appPatientDataPanel = new JPanel();
-		appPatientDataPanel.setLayout(new GridLayout(0,2,2,20));
-		
-		appPatientDataPanel.add(appLabelName);
-		appPatientDataPanel.add(appTextFieldName);
-		appPatientDataPanel.add(appLabelSurname);
-		appPatientDataPanel.add(appTextFieldSurname);
-		appPatientDataPanel.add(appLabelID);
-		appPatientDataPanel.add(appTextFieldID);
+	    appPatientPanel.setLayout(new BorderLayout());
+	    JPanel appPatientDataPanel = new JPanel();
+	    
+		appPatientDataPanel.setLayout(new GridBagLayout());
+		GridBagConstraints d = new GridBagConstraints();
+		d.insets = new Insets(5, 10, 5, 5);
+		d.gridx = 0;
+		d.gridy = 0;
+		d.ipady = 15;
+		appPatientDataPanel.add(appLabelName, d);
+		d.gridx = 1;
+		d.gridy = 0;
+		d.ipady = 15;
+		appPatientDataPanel.add(appTextFieldName, d);
+		d.gridx = 0;
+		d.gridy = 1;
+		d.ipady = 15;
+		appPatientDataPanel.add(appLabelSurname, d);
+		d.gridx = 1;
+		d.gridy = 1;
+		d.ipady = 15;
+		appPatientDataPanel.add(appTextFieldSurname, d);
+		d.gridx = 0;
+		d.gridy = 2;
+		d.ipady = 15;
+		appPatientDataPanel.add(appLabelID, d);
+		d.gridx = 1;
+		d.gridy = 2;
+		d.ipady = 15;
+		appPatientDataPanel.add(appTextFieldID, d);
 		
 		appPatientPanel.add(appPatientDataPanel, BorderLayout.CENTER);
 		
@@ -215,10 +236,24 @@ public class AppView extends JFrame{
 		appClinicPanel.add(appActionBar2, BorderLayout.PAGE_END);
 		
 		/** set action view panel */
-		appActionPanel.setLayout(new GridLayout(2,2,2,20));
-		appActionPanel.add(appButtonActionLoadImage);
-		appActionPanel.add(appButtonActionProcess);
-		appActionPanel.add(appButtonActionSaveResult);
+		appActionPanel.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.insets = new Insets(5, 10, 5, 5);
+		c.gridx = 0;
+		c.gridy = 0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.ipady = 20;
+		appActionPanel.add(appButtonActionLoadImage, c);
+		c.gridx = 0;
+		c.gridy = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.ipady = 20;
+		appActionPanel.add(appButtonActionProcess,c);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 0;
+		c.gridy = 2;
+		c.ipady = 20;
+		appActionPanel.add(appButtonActionSaveResult,c);
 		
 	}
 	
@@ -364,10 +399,18 @@ public class AppView extends JFrame{
 		BufferedImage image = ImageProcessing.matToBufferedImage(img1);
 		BufferedImage image1 = ImageProcessing.ResizedImage(image, appResultPanel.getWidth(), appResultPanel.getHeight());
 		ImageIcon image2 = new ImageIcon(image1);
-		int e = ImageProcessing.countEryth(img1); //liczba erytrocytow
+		numberEryth = ImageProcessing.countEryth(img1); //liczba erytrocytow
+		String numberEryth1 = Integer.toString(numberEryth);
+		appCounterField.setText(numberEryth1);
 		AppView.appResultLabel.setIcon(image2);
 	}
-		
+	
+	public static Mat getImage() 
+	{
+		return img1;
+	}
+	
+			
 	/**
 	 * @fn setController()
 	 * @brief add listener for all active components

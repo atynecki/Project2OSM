@@ -9,6 +9,7 @@ package mvc;
 import java.time.LocalDateTime;
 import java.util.Random;
 
+import org.opencv.core.Mat;
 import org.opencv.highgui.Highgui;
 
 import adapters.*;
@@ -47,7 +48,13 @@ public class AppModel {
 		this.patient = patient;
 	}
 	
+	public void setClinic(Clinic clinic) {
+		this.clinic = clinic;
+	}
+
 	public void savePatientData(){
+		String dataDirPath1 = System.getProperty("user.dir");
+		String pathIMG  = dataDirPath1 + "\\" + "outcome" + "\\" + patient.getName_() + " " + patient.getLast_name_() + "\\" + "result.jpg";
 		String dataDirPath = System.getProperty("user.dir") + "/" + "outcome" + "/" + patient.getName_() + " " + patient.getLast_name_() + "/";
 		FileAdapter.createDirectory(dataDirPath);
 		appFile = new FileAdapter(dataDirPath + "data.txt", csvCellSeparator, csvLineSeparator);
@@ -60,7 +67,8 @@ public class AppModel {
 		appFile.writeLine(resultFileLabel[4] + " " + clinic.getName_());
 		appFile.writeLine(resultFileLabel[5] + " " + clinic.getAddress_());
 		appFile.writeLine(resultFileLabel[6] + " " + orderNumber);
-	
+		Mat image = AppView.getImage();
+		Highgui.imwrite(pathIMG, image); 
 	}
 	
 	public void processImage()
