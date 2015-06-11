@@ -25,6 +25,8 @@ import data.*;
 
 public class AppView extends JFrame{
 	private static final long serialVersionUID = 1L;
+	public static Mat img_src = new Mat();
+	public static Mat img_result = new Mat();
 		
 	/** menu view components */
 	private JMenuBar appMenuBar = new JMenuBar();

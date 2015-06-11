@@ -32,8 +32,6 @@ public class AppModel {
 	private Clinic clinic;
 	private String orderNumber;
 	private Random randomGenerator = new Random();
-	public static Mat img_src = new Mat();
-	public static Mat img_result = new Mat();
 	private ImageProcessing processing;
 	public int numberEryth;
 	
@@ -43,6 +41,7 @@ public class AppModel {
 		appFile = new FileAdapter();
 		patient = new Patient();
 		processing = new ImageProcessing();
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 	}
 	
 	/** getters and setters */
@@ -69,8 +68,8 @@ public class AppModel {
 	 * @return file object
 	 */
 	public BufferedImage loadImage(String path) {
-		 img_src = Highgui.imread(path, Highgui.CV_LOAD_IMAGE_GRAYSCALE);	
-		 BufferedImage image = ImageProcessing.matToBufferedImage(img_src);
+		 AppView.img_src = Highgui.imread(path, Highgui.CV_LOAD_IMAGE_GRAYSCALE);	
+		 BufferedImage image = ImageProcessing.matToBufferedImage(AppView.img_src);
 		 
 		 return image;
 	}
@@ -82,9 +81,9 @@ public class AppModel {
 	 */
 	public BufferedImage processImage()
 	{
-		img_result = processing.process(img_src);
-		BufferedImage image = ImageProcessing.matToBufferedImage(img_result);
-		numberEryth = processing.countEryth(img_result);
+		AppView.img_result = processing.process(AppView.img_src);
+		BufferedImage image = ImageProcessing.matToBufferedImage(AppView.img_result);
+		numberEryth = processing.countEryth(AppView.img_result);
 		
 		return image;
 	}
@@ -110,7 +109,7 @@ public class AppModel {
 		appFile.writeLine(resultFileLabel[6] + " " + orderNumber);
 		appFile.writeLine(resultFileLabel[7] + " " + numberEryth);
 		appFile.close();
-		Highgui.imwrite(pathIMG, img_result); 
+		Highgui.imwrite(pathIMG,AppView.img_result); 
 	}
 	
 	/**

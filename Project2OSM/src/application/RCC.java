@@ -1,11 +1,11 @@
 /**
  * @name RCC (red cells counter)
- * @brief simple program for counting erythrocytes in microscopic images of the blood
+ * @brief simple program for counting erythrocytes from microscopic images of the blood
  * @version 1.0
  *
  * @section DESCRIPTION
- * TODO uzupelniæ! 
- * It is simple application enabling ....   Graphical User Interface based on MCV (Model-View-Controller) pattern. 
+ * It is simple application for counting erythrocytes from microscope images using morphological operation.
+ * Graphical User Interface based on MCV (Model-View-Controller) pattern. 
  */
 
 package application;
